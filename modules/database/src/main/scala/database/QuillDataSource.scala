@@ -1,7 +1,8 @@
 package database
 
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
-import database.config.DatabaseConfig
+import domain.config.AppConfig
+import domain.config.AppConfig.DatabaseConfig
 import zio._
 
 object QuillDataSource {
@@ -24,6 +25,5 @@ object QuillDataSource {
     } yield dataSource
   }
 
-  def live(config: DatabaseConfig): ZLayer[Any, Throwable, HikariDataSource] =
-    ZLayer.fromZIO(mkDataSource(config))
+  val layer = ZLayer.fromZIO(ZIO.service[AppConfig].flatMap(config => mkDataSource(config.databaseConfig)))
 }

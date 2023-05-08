@@ -2,7 +2,7 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "2.12.10"
 
-val zioVersion = "2.0.10"
+val zioVersion = "2.0.13"
 val zioLogging = "2.1.1"
 
 val logging = Seq(
@@ -11,6 +11,11 @@ val logging = Seq(
   "dev.zio" %% "zio-logging",
   "dev.zio" %% "zio-logging-slf4j"
 ).map(_ % zioLogging)
+
+lazy val domain = (project in file("./modules/domain"))
+  .settings(
+    name := "domain_module",
+  )
 
 lazy val database = (project in file("./modules/database"))
   .settings(
@@ -26,7 +31,7 @@ lazy val database = (project in file("./modules/database"))
       "com.dimafeng"      %% "testcontainers-scala" % "0.40.12"  % Test,
       "org.testcontainers" % "postgresql"           % "1.18.0"   % Test
     ) ++ Library.testDependencies ++ logging
-  )
+  ).dependsOn(domain)
 
 lazy val kafka = (project in file("./modules/kafka"))
   .settings(
@@ -41,7 +46,7 @@ lazy val kafka = (project in file("./modules/kafka"))
       "dev.zio"                 %% "zio-test"           % zioVersion % Test,
       "io.github.embeddedkafka" %% "embedded-kafka"     % "3.4.0"    % Test
     ) ++ Library.testDependencies
-  )
+  ).dependsOn(domain)
 
 lazy val delivery = (project in file("./modules/delivery"))
   .settings(
@@ -55,7 +60,7 @@ lazy val delivery = (project in file("./modules/delivery"))
       "dev.zio"         %% "zio-test"     % zioVersion % Test
     ) ++ Library.testDependencies
   )
-  .dependsOn(database)
+  .dependsOn(domain, database)
 
 lazy val ruleEngine = (project in file("./modules/ruleEngine"))
   .settings(
@@ -83,4 +88,4 @@ lazy val root = (project in file("."))
       "dev.zio"               %% "zio-test"     % zioVersion % Test
     ) ++ Library.testDependencies
   )
-  .dependsOn(kafka, database)
+  .dependsOn(domain, kafka, database)

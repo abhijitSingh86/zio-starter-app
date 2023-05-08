@@ -2,10 +2,12 @@ package container
 
 import com.dimafeng.testcontainers.{JdbcDatabaseContainer, PostgreSQLContainer}
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
-import database.config.{DatabaseConfig, DatabaseMigrator}
+import database.config.DatabaseMigrator
+import domain.config.AppConfig
+import domain.config.AppConfig.DatabaseConfig
 import io.getquill._
 import org.testcontainers.utility.DockerImageName
-import zio.{Cause, ZIO}
+import zio.{Cause, ZIO, ZLayer}
 import zio.test.{TestAspect, ZIOSpecDefault, assertTrue}
 
 object PostgresTestContainer extends ZIOSpecDefault {
@@ -32,14 +34,14 @@ object PostgresTestContainer extends ZIOSpecDefault {
       .catchAll(ex => ZIO.logErrorCause("Error while closing the database", Cause.die(ex)))
   }
   def spec =
-    suite("PostgresTestContainer")(
+    (suite("PostgresTestContainer")(
       test("should be able to spin up the container and run the init sql and query custom query") {
         import datasource._
         val pi  = quote(sql""" select id from city""".as[Query[Int]])
         val ret = datasource.run(pi)
         assertTrue(ret.size == 30)
       }
-    ) @@ TestAspect.beforeAll(ZIO.attempt(container.start()) *> DatabaseMigrator.migrate(databaseConfig)) @@
-      TestAspect.afterAll(stopContainer())
+    ) @@ TestAspect.beforeAll(DatabaseMigrator.migrate) @@
+      TestAspect.afterAll(stopContainer())).provide(DatabaseMigrator.layer, ZLayer.succeed{container.start();AppConfig(null, databaseConfig)})
 
 }
