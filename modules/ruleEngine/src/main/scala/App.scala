@@ -1,6 +1,7 @@
 import java.util.Scanner
+import java.util.stream.Collectors
 import scala.io.Source
-import scala.jdk.CollectionConverters.asScalaBufferConverter
+import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Random, Success, Try}
 import scala.util.control.Breaks.break
 
@@ -38,7 +39,7 @@ object App {
   def run(str: String) = {
     val scanner = new Scanner(str)
 
-    println(scanner.tokens().toList.asScala.mkString("\n"))
+    println(scanner.tokens().collect(Collectors.toList).asScala.mkString("\n"))
   }
 
 }
