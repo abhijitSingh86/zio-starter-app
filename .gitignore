@@ -1,0 +1,14 @@
+.idea
+.bsp
+.metals
+.bloop
+target
+project/target
+project/project
+.vscode
+.gradle
+**/target/**
+.vscode
+**/.bloop/**
+**/project.target/**
+
