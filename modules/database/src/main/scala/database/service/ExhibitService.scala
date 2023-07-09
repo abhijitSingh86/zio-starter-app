@@ -11,17 +11,17 @@ trait ExhibitService {
 
 }
 
-case class City(id:Int, name:String, countryCode:String, district:String, population:Long)
+case class City(id: Int, name: String, countryCode: String, district: String, population: Long)
 
-class LiveExhibitService(quill: Quill.Postgres[LowerCase]) extends ExhibitService{
+class LiveExhibitService(quill: Quill.Postgres[LowerCase]) extends ExhibitService {
 
   import quill._
 
-  def get: ZIO[Any, SQLException, List[City]] = run(quote{
-      query[City]
+  def get: ZIO[Any, SQLException, List[City]] = run(quote {
+    query[City]
   })
 }
 
-object LiveExhibitService{
+object LiveExhibitService {
   def layer = ZLayer.fromFunction(new LiveExhibitService(_))
 }

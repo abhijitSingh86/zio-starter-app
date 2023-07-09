@@ -1,3 +1,6 @@
+import grammer.{Grammar, Parser, Tokenizer}
+import io.getquill.AstPrinter
+
 import java.util.Scanner
 import java.util.stream.Collectors
 import scala.io.Source
@@ -37,9 +40,13 @@ object App {
 
   def error(line: Int, message: String, where: String = "") = println(s"Error $line $where : $message  ")
   def run(str: String) = {
-    val scanner = new Scanner(str)
-
-    println(scanner.tokens().collect(Collectors.toList).asScala.mkString("\n"))
+    val tokenizer = new Tokenizer(str)
+    val tokens    = tokenizer.scanTokens()
+    val parser    = new Parser(tokens)
+    parser
+      .parse()
+      .map(x => println(Grammar.AstPrinter.show(x)))
+      .getOrElse(println(s"Got Error "))
   }
 
 }

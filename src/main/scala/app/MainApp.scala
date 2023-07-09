@@ -30,9 +30,9 @@ object MainApp extends ZIOAppDefault {
       _        <- DatabaseMigrator.migrate
       consumer <- ZIO.service[KafkaConsumerService]
       producer <- ZIO.service[KafkaProducerService]
-      dp <- ZIO.service[ExhibitService]
-      cities <- dp.get
-      _ <- ZIO.logInfo(s" ${cities.mkString("\n")}")
+      dp       <- ZIO.service[ExhibitService]
+      cities   <- dp.get
+      _        <- ZIO.logInfo(s" ${cities.mkString("\n")}")
       _        <- consumer.consume(x => program(producer, x))
     } yield ()
 

@@ -31,7 +31,12 @@ object TestApp extends ZIOAppDefault {
 
     pro
       .race(cons)
-      .provide(KafkaProducerService.layer, KafkaConsumerService.layer, ZLayer.succeed(AppConfig(config, null)), Scope.default)
+      .provide(
+        KafkaProducerService.layer,
+        KafkaConsumerService.layer,
+        ZLayer.succeed(AppConfig(config, null)),
+        Scope.default
+      )
 
   }
 

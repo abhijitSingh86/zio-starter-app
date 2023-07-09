@@ -12,7 +12,8 @@ trait KafkaConsumerService {
 
 }
 
-class LiveKafkaConsumerService(consumer: ZConsumer, kafkaConfiguration: KafkaConfiguration) extends KafkaConsumerService {
+class LiveKafkaConsumerService(consumer: ZConsumer, kafkaConfiguration: KafkaConfiguration)
+    extends KafkaConsumerService {
 
   override def consume(body: Chunk[CommittableRecord[String, String]] => UIO[Unit]): ZIO[Scope, Any, Unit] = {
     for {

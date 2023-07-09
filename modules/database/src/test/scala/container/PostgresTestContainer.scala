@@ -17,7 +17,7 @@ object PostgresTestContainer extends ZIOSpecDefault {
     commonJdbcParams = JdbcDatabaseContainer.CommonParams(initScriptPath = Option("db/init.sql"))
   )
 
-  lazy val databaseConfig = DatabaseConfig(container.jdbcUrl,container.username, container.password)
+  lazy val databaseConfig = DatabaseConfig(container.jdbcUrl, container.username, container.password)
 //  lazy val databaseConfig = DatabaseConfig("jdbc:postgres://localhost:5432/localDb","dbuser", "dbsecret")
   lazy val config = {
     val c = new HikariConfig()
@@ -42,6 +42,7 @@ object PostgresTestContainer extends ZIOSpecDefault {
         assertTrue(ret.size == 30)
       }
     ) @@ TestAspect.beforeAll(DatabaseMigrator.migrate) @@
-      TestAspect.afterAll(stopContainer())).provide(DatabaseMigrator.layer, ZLayer.succeed{container.start();AppConfig(null, databaseConfig)})
+      TestAspect.afterAll(stopContainer()))
+      .provide(DatabaseMigrator.layer, ZLayer.succeed { container.start(); AppConfig(null, databaseConfig) })
 
 }

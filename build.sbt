@@ -14,7 +14,7 @@ val logging = Seq(
 
 lazy val domain = (project in file("./modules/domain"))
   .settings(
-    name := "domain_module",
+    name := "domain_module"
   )
 
 lazy val database = (project in file("./modules/database"))
@@ -31,7 +31,8 @@ lazy val database = (project in file("./modules/database"))
       "com.dimafeng"      %% "testcontainers-scala" % "0.40.12"  % Test,
       "org.testcontainers" % "postgresql"           % "1.18.0"   % Test
     ) ++ Library.testDependencies ++ logging
-  ).dependsOn(domain)
+  )
+  .dependsOn(domain)
 
 lazy val kafka = (project in file("./modules/kafka"))
   .settings(
@@ -46,7 +47,8 @@ lazy val kafka = (project in file("./modules/kafka"))
       "dev.zio"                 %% "zio-test"           % zioVersion % Test,
       "io.github.embeddedkafka" %% "embedded-kafka"     % "3.4.0"    % Test
     ) ++ Library.testDependencies
-  ).dependsOn(domain)
+  )
+  .dependsOn(domain)
 
 lazy val delivery = (project in file("./modules/delivery"))
   .settings(
@@ -65,6 +67,20 @@ lazy val delivery = (project in file("./modules/delivery"))
 lazy val ruleEngine = (project in file("./modules/ruleEngine"))
   .settings(
     name := "ruleEngine_module",
+    libraryDependencies ++= Seq(
+      "dev.zio"         %% "zio"          % zioVersion,
+      "dev.zio"         %% "zio-streams"  % zioVersion,
+      "dev.zio"         %% "zio-http"     % "0.0.5",
+      "dev.zio"         %% "zio-json"     % "0.4.2",
+      "org.hdrhistogram" % "HdrHistogram" % "2.1.12",
+      "dev.zio"         %% "zio-test"     % zioVersion % Test
+    ) ++ Library.testDependencies
+  )
+  .dependsOn(database)
+
+lazy val apiClient = (project in file("./modules/apiClient"))
+  .settings(
+    name := "paiClient_module",
     libraryDependencies ++= Seq(
       "dev.zio"         %% "zio"          % zioVersion,
       "dev.zio"         %% "zio-streams"  % zioVersion,

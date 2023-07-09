@@ -86,7 +86,7 @@ class Tokenizer(source: String) { self =>
       case '.' => token(TokenType.Dot, null)
       case ',' => token(TokenType.Comma, null)
       case '*' => token(TokenType.Star, null)
-      case '=' => token(TokenType.Equal, null)
+      case '/' => token(TokenType.Slash, null)
 
     }
     val skippers: PartialFunction[Char, Option[Token]] = {
@@ -103,6 +103,8 @@ class Tokenizer(source: String) { self =>
         if (isNextChar('=')) token(TokenType.LessThanEqual) else token(TokenType.LessThan)
       case '!' =>
         if (isNextChar('=')) token(TokenType.NotEqual) else token(TokenType.Bang)
+      case '=' => if (isNextChar('=')) token(TokenType.EqualEqual) else token(TokenType.Equal)
+
     }
 
     val complicatedChars: PartialFunction[Char, Token] = {
